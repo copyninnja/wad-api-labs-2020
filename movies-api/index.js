@@ -2,6 +2,8 @@ import dotenv from 'dotenv';
 import express from 'express';
 import moviesRouter from './api/movies';
 import bodyParser from 'body-parser';
+import './db';
+import {loadUsers} from './seedData'
 dotenv.config();
 const errHandler = (err, req, res, next) => {
   /* if the error in development then send stack trace to display whole error,
@@ -11,7 +13,9 @@ const errHandler = (err, req, res, next) => {
   }
   res.status(500).send(`Hey!! You caught the error 👍👍, ${err.stack} `);
 };
-
+if (process.env.SEED_DB) {
+  loadUsers();
+}
 const app = express();
 
 const port = process.env.PORT;
