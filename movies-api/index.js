@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import moviesRouter from './api/movies';
+import genreRouter from  './api/genres';
 import bodyParser from 'body-parser';
 import './db';
 import {loadUsers} from './seedData';
@@ -27,6 +28,8 @@ app.use(bodyParser.urlencoded());
 
 app.use(express.static('public'));
 app.use('/api/movies', moviesRouter);
+
+app.use('/api/genres', genreRouter);
 
 app.listen(port, () => {
   console.info(`Server running at ${port}`);

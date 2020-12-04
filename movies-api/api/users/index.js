@@ -27,6 +27,7 @@ router.put('/:id',  (req, res,next) => {
     })
     .then(user => res.json(200, user)).catch(next);
 });
+
 router.post('/:userName/favourites', (req, res, next) => {
     const newFavourite = req.body;
     const query = {username: req.params.userName};
@@ -35,19 +36,21 @@ router.post('/:userName/favourites', (req, res, next) => {
         user => { 
           (user.favourites)?user.favourites.push(newFavourite):user.favourites =[newFavourite];
           console.log(user);
-          User.findOneAndUpdate(query, {favourites:user.favourites}, {
-            new: true
-          }).then(user => res.status(201).send(user));
+          User.findOneAndUpdate(query, { favourites: user.favourites }, {
+            new: true, runValidators: true
+          }).then(user => res.status(201).send(user)).catch(next);
         }
       ).catch(next);
     } else {
         res.status(401).send("Unable to find user")
     }
   });
+
   router.get('/:userName/favourites', (req, res, next) => {
     const user = req.params.userName;
     User.find( {username: user}).then(
         user => res.status(201).send(user.favourites)
     ).catch(next);
   });
+
 export default router;
