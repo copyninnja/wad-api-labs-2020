@@ -4,7 +4,8 @@ import moviesRouter from './api/movies';
 import genreRouter from  './api/genres';
 import bodyParser from 'body-parser';
 import './db';
-import {loadUsers, loadMovies} from './seedData';import usersRouter from './api/users';
+import {loadUsers, loadMovies} from './seedData';
+import usersRouter from './api/users';
 import session from 'express-session';
 import passport from './authenticate';
 
@@ -18,10 +19,12 @@ const errHandler = (err, req, res, next) => {
   }
   res.status(500).send(`Hey!! You caught the error 👍👍, ${err.stack} `);
 };
+
 if (process.env.SEED_DB) {
   loadUsers();
   loadMovies();
 }
+
 const app = express();
 // initialise passport​
 app.use(passport.initialize());;
