@@ -24,11 +24,19 @@ router.post('/', async (req, res, next) => {
     });
   }
   if (req.query.action === 'register') {
+    const rep=/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,}$/;
+    if(req.body.password.match(rep)){
     await User.create(req.body).catch(next);
-    res.status(201).json({
+    res.status(201).json({ 
       code: 201,
       msg: 'Successful created new user.',
-    });
+    });}
+    else{
+      res.status(401).json({
+        success: false,
+        msg: 'BAD PASSWORD',
+      })
+    }
   } else {
     const user = await User.findByUserName(req.body.username).catch(next);
       if (!user) return res.status(401).json({ code: 401, msg: 'Authentication failed. User not found.' });
@@ -65,9 +73,11 @@ router.put('/:id',  (req, res,next) => {
 router.post('/:userName/favourites', async (req, res, next) => {
   const newFavourite = req.body.id;
   const userName = req.params.userName;
-  const movie = await movieModel.findByMovieDBId(newFavourite);
+  const movie = await movieModel.findByMovieDBId(newFavourite).catch(next);
+  if(!movie)return res.status(401).json({ code: 401, msg: 'failed. movie not found.' });
   const user = await User.findByUserName(userName);
-  await user.favourites.push(movie._id);
+  const favouriteId= await User.findByFavouriteId(movie._id).catch(next);
+if(!favouriteId) { await user.favourites.push(movie._id);}
   await user.save(); 
   res.status(201).json(user); 
 });

@@ -35,7 +35,9 @@ UserSchema.pre('save', function(next) {
 UserSchema.statics.findByUserName = function (username) {
   return this.findOne({ username: username });
 };
-
+UserSchema.statics.findByFavouriteId = function (_id) {
+  return this.findOne({ favourites: _id });
+};
 UserSchema.methods.comparePassword = function(passw, cb) {
   bcrypt.compare(passw, this.password, (err, isMatch) => {
       if (err) {
@@ -44,5 +46,7 @@ UserSchema.methods.comparePassword = function(passw, cb) {
       cb(null, isMatch);
   });
 };
+
+// 
 
 export default mongoose.model('User', UserSchema);
